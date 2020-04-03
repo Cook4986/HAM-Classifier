@@ -7,6 +7,7 @@ import requests
 import json
 import urllib.request
 import re
+from wordcloud import WordCloud
 
 #get User Input 
 inputString = input("Input four digit (common era) year: ")
@@ -20,8 +21,8 @@ objects = []
 http = urllib3.PoolManager()
 r = http.request('GET', 'https://api.harvardartmuseums.org/object',
     fields = {
-        'size':100,
-        'page':10,
+        'size':250,
+        'page':5,
         'apikey': 'd9da03d0-fbef-11e9-896e-3bd7722ada6a',
         'yearmade': inputString,
         'fields': 'primaryimageurl',
@@ -56,11 +57,12 @@ def Classifier():
 
 #iterate over all images on page 
 for value in records:
-    print("image url #", idNumber + 1,"=", records[idNumber]['primaryimageurl'])
-    imageCache = "cache.jpg"
-    urllib.request.urlretrieve(records[idNumber]['primaryimageurl'], imageCache)
-    Classifier()
-    idNumber = idNumber + 1  
+    if 'primaryimageurl' in records[idNumber]:
+        print("image url #", idNumber + 1,"=", records[idNumber]['primaryimageurl'])
+        imageCache = "cache.jpg"
+        urllib.request.urlretrieve(records[idNumber]['primaryimageurl'], imageCache)
+        Classifier()
+        idNumber = idNumber + 1  
 
 #cleanup, print and save classifications
 list2 = [x for x in objects if x != []]
@@ -75,5 +77,14 @@ print(list2)
 
 with open("outputFile.txt", "w") as output:
     output.write(list2)
+    
+wordcloud = WordCloud().generate(list2)
+
+# Display the generated image the matplotlib way:
+import matplotlib.pyplot as plt
+plt.imshow(wordcloud, interpolation='bilinear')
+plt.axis("off")
+print("\n")
+
 
 print("program terminated")
