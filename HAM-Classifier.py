@@ -1,3 +1,8 @@
+###searches Harvard Art Museum digital collections by (common era), four digit year-of-production, and applies object classification to images of objects from that year
+###Prints list of objects detected and outputs wordcloud based on those classifications
+###Requires unique Harvard Art Museum API key, accessible here: https://harvardartmuseums.org/collections/api
+###Matt Cook - 2020
+
 import urllib3
 import cvlib as cv
 from cvlib.object_detection import draw_bbox
@@ -23,7 +28,7 @@ r = http.request('GET', 'https://api.harvardartmuseums.org/object',
     fields = {
         'size':250,
         'page':5,
-        'apikey': 'd9da03d0-fbef-11e9-896e-3bd7722ada6a',
+        'apikey': 'xxx', #add HAM api key here
         'yearmade': inputString,
         'fields': 'primaryimageurl',
         
@@ -75,7 +80,7 @@ print("the following objects were detected in images from the year " + inputStri
 print("\n")
 print(list2)
 
-with open("outputFile.txt", "w") as output:
+with open("xxx.txt", "w") as output:
     output.write(list2)
     
 wordcloud = WordCloud().generate(list2)
